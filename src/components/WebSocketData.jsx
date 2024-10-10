@@ -1,45 +1,27 @@
 import { useEffect } from "react";
-import PropTypes from "prop-types"; // PropTypes를 임포트
+import axios from "axios";
+import PropTypes from "prop-types"; // PropTypes 추가
 
 const WebSocketData = ({ setStatusData }) => {
-  const connectWebSocket = () => {
-    const directionSocket = new WebSocket(
-      "ws://tory-lola-huitae-05796dff.koyeb.app/topic/direction"
-    );
-
-    directionSocket.onopen = () => {
-      console.log("WebSocket connection opened");
-    };
-
-    directionSocket.onmessage = (event) => {
-      const data = JSON.parse(event.data);
-      console.log("Direction Data Received:", data);
-      setStatusData((prevState) => ({
-        ...prevState,
-        direction: data.data,
-      }));
-    };
-
-    directionSocket.onerror = (error) => {
-      console.error("WebSocket error:", error);
-    };
-
-    directionSocket.onclose = (event) => {
-      if (event.wasClean) {
-        console.log(
-          `WebSocket connection closed cleanly: code=${event.code}, reason=${event.reason}`
+  useEffect(() => {
+    // HTTP 요청으로 데이터 받아오기
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(
+          "http://tory-lola-huitae-05796dff.koyeb.app/api/direction"
         );
-      } else {
-        console.error(
-          "WebSocket connection closed unexpectedly. Reconnecting in 3 seconds..."
-        );
-        setTimeout(connectWebSocket, 3000); // 3초 후 재연결 시도
+        const data = response.data;
+        console.log("Direction Data Received:", data);
+        setStatusData((prevState) => ({
+          ...prevState,
+          direction: data.data,
+        }));
+      } catch (error) {
+        console.error("HTTP error:", error);
       }
     };
-  };
 
-  useEffect(() => {
-    connectWebSocket();
+    fetchData();
   }, [setStatusData]);
 
   return null;
@@ -47,7 +29,7 @@ const WebSocketData = ({ setStatusData }) => {
 
 // PropTypes 설정
 WebSocketData.propTypes = {
-  setStatusData: PropTypes.func.isRequired, // setStatusData가 함수임을 명시
+  setStatusData: PropTypes.func.isRequired, // 함수로 전달되는 setStatusData 검증
 };
 
 export default WebSocketData;
