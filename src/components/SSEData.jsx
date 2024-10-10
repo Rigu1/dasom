@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import axios from "axios";
 import PropTypes from "prop-types"; // PropTypes 추가
 
-const WebSocketData = ({ setStatusData }) => {
+const SSEData = ({ setStatusData }) => {
   useEffect(() => {
     // HTTP 요청으로 데이터 받아오기
     const fetchData = async () => {
@@ -28,8 +28,8 @@ const WebSocketData = ({ setStatusData }) => {
 };
 
 // PropTypes 설정
-WebSocketData.propTypes = {
+SSEData.propTypes = {
   setStatusData: PropTypes.func.isRequired, // 함수로 전달되는 setStatusData 검증
 };
 
-export default WebSocketData;
+export default SSEData;
