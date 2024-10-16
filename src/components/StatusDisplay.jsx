@@ -1,25 +1,76 @@
+// src/components/StatusDisplay.jsx
 import React from "react";
 import PropTypes from "prop-types";
+import styled, { keyframes } from "styled-components";
+import { boxShadow, flexCenter } from "@/styles/mixins";
+
+// 깜박이는 애니메이션
+const blink = keyframes`
+  0%, 100% { border-color: red; }
+  50% { border-color: transparent; }
+`;
+
+// 이미지 컨테이너 스타일
+const ImageWrapper = styled.div`
+  ${boxShadow}
+  ${flexCenter}
+  width: 100px;
+  height: 100px;
+  margin: 10px;
+  border: 5px solid transparent;
+  animation: ${({ $danger }) => ($danger ? blink : "none")} 1s infinite;
+`;
+
+// 방향 블록 스타일
+const DirectionBlock = styled.div`
+  flex: 1;
+  height: 100px;
+  margin: 5px;
+  background-color: ${({ $active }) => ($active ? "#4caf50" : "#d3d3d3")};
+  ${flexCenter}
+`;
 
 const StatusDisplay = ({ status }) => {
-  const { direction, battery, collision, pressure } = status || {};
+  const { direction, battery, collision, pressure } = status;
 
   return (
     <div>
-      <h3>Direction</h3>
-      <p>Left: {direction?.left ? "Yes" : "No"}</p>
-      <p>Right: {direction?.right ? "Yes" : "No"}</p>
+      <div style={{ display: "flex" }}>
+        <DirectionBlock $active={direction?.left}>
+          <h3>Left</h3>
+        </DirectionBlock>
+        <DirectionBlock $active={direction?.right}>
+          <h3>Right</h3>
+        </DirectionBlock>
+      </div>
 
-      <h3>Battery</h3>
-      <p>Battery Level: {battery?.level || "N/A"}%</p>
-      <p>Status: {battery?.status || "N/A"}</p>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-around",
+          marginTop: "20px",
+        }}
+      >
+        <ImageWrapper $danger={collision?.risk}>
+          <img
+            src="/imgs/collision.png"
+            alt="Collision"
+            style={{ width: "80%" }}
+          />
+        </ImageWrapper>
 
-      <h3>Collision Detection</h3>
-      <p>Risk: {collision?.risk ? "Yes" : "No"}</p>
+        <ImageWrapper $danger={battery?.status === "low"}>
+          <img src="/imgs/battery.png" alt="Battery" style={{ width: "80%" }} />
+        </ImageWrapper>
 
-      <h3>Tire Pressure</h3>
-      <p>Pressure: {pressure?.pressure || "N/A"} PSI</p>
-      <p>Status: {pressure?.status || "N/A"}</p>
+        <ImageWrapper $danger={pressure?.status === "low"}>
+          <img
+            src="/imgs/tirePressure.png"
+            alt="Tire Pressure"
+            style={{ width: "80%" }}
+          />
+        </ImageWrapper>
+      </div>
     </div>
   );
 };
@@ -41,7 +92,7 @@ StatusDisplay.propTypes = {
       pressure: PropTypes.number,
       status: PropTypes.string,
     }),
-  }),
+  }).isRequired,
 };
 
 export default StatusDisplay;
