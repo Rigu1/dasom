@@ -11,6 +11,27 @@ export default defineConfig({
     },
   },
   server: {
-    port: 3000,
+    proxy: {
+      "/direction": {
+        target: "https://tory-lola-huitae-05796dff.koyeb.app",
+        changeOrigin: true,
+        secure: false,
+      },
+      "/battery": {
+        target: "https://tory-lola-huitae-05796dff.koyeb.app",
+        changeOrigin: true,
+        secure: false,
+      },
+      "/collision": {
+        target: "https://tory-lola-huitae-05796dff.koyeb.app",
+        changeOrigin: true,
+        secure: false,
+      },
+      "/pressure": {
+        target: "https://tory-lola-huitae-05796dff.koyeb.app",
+        changeOrigin: true,
+        secure: false,
+      },
+    },
   },
 });
